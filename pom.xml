@@ -21,9 +21,9 @@
                 <tomcat.host.url>http://3.109.186.189:8080</tomcat.host.url>
                 <sonar.host.url>http://15.206.164.56:9000/</sonar.host.url>
                 <sonar.login>YOUR-TOKEN-GOES-HERE</sonar.login>
-                <!--
+                
                 <sonar.login>admin</sonar.login>
-                <sonar.password>ganesh1</sonar.password> -->
+                <sonar.password>ganesh1</sonar.password> 
                 <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
                 <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
