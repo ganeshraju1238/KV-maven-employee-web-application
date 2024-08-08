@@ -1,0 +1,87 @@
+
+pipeline {
+    agent any
+
+tools{
+   maven "maven 3.9.8"
+}
+triggers {
+  pollSCM '* * * * *'
+}
+options {
+  timestamps()
+}
+
+
+    stages {
+       
+        stage('checkoutgitcode') { 
+            steps {
+                 notifyBuild('STARTED')
+              git branch: 'devteam', credentialsId: 'e0f2abd6-9977-4c4b-b29e-e19c1176e48c', url: 'https://github.com/ganeshraju1238/KV-maven-employee-web-application.git'   
+            }
+        }
+        
+        stage('BuildArtifact') { 
+            steps {
+              sh "mvn clean package"   
+            }
+        }
+        stage('SonarQubeReport'){
+              steps {
+                sh "mvn sonar:sonar" 
+               }
+                  }
+        stage('DeployToNexus'){
+              steps {
+                sh "mvn deploy" 
+               }
+                  }
+        stage('DeployToTomcat'){
+              steps {
+                 sshagent(['49a57718-5760-48b3-a32a-2a7a28c45d94']) {
+
+        sh "scp -o StrictHostKeyChecking=no target/employee-application.war ec2-user@13.201.118.112:/opt/apache-tomcat-9.0.91/webapps" 
+               }
+                  } 
+                                }
+    }//stage closing
+   post {
+  success {
+    notifyBuild(currentBuild.result)
+  }
+  failure {
+    notifyBuild(currentBuild.result)
+  }
+}
+
+}//pipeline closing
+
+
+def notifyBuild(String buildStatus = 'STARTED') {
+  // build status of null means successful
+  buildStatus =  buildStatus ?: 'SUCCESS'
+
+  // Default values
+  def colorName = 'RED'
+  def colorCode = '#FF0000'
+  def subject = "${buildStatus}: Job name '${env.JOB_NAME}, Build number [${env.BUILD_NUMBER}]'"
+  def summary = "${subject} (${env.BUILD_URL})"
+
+  // Override default values based on build status
+  if (buildStatus == 'STARTED') {
+    color = 'YELLOW'
+    colorCode = '#FFFF00'
+  }
+ else if (buildStatus == 'SUCCESS') {
+    color = 'GREEN'
+    colorCode = '#00FF00'
+  }
+ else {
+    color = 'RED'
+    colorCode = '#FF0000'
+  }
+
+  // Send notifications
+  slackSend (color: colorCode, message: summary, channel :'KV-dev-team')
+}
