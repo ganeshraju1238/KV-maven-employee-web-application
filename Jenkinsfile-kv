@@ -1,6 +1,10 @@
 
 pipeline {
     agent any
+parameters {
+  choice choices: ['devteam', 'qa', 'uat'], description: 'selecting Branches for kv project', name: 'Branch name'
+}
+
 
 tools{
    maven "maven 3.9.8"
@@ -18,7 +22,7 @@ options {
         stage('checkoutgitcode') { 
             steps {
                  notifyBuild('STARTED')
-              git branch: 'devteam', credentialsId: 'e0f2abd6-9977-4c4b-b29e-e19c1176e48c', url: 'https://github.com/ganeshraju1238/KV-maven-employee-web-application.git'   
+              git branch: "${params.Branchname}", credentialsId: 'e0f2abd6-9977-4c4b-b29e-e19c1176e48c', url: 'https://github.com/ganeshraju1238/KV-maven-employee-web-application.git'   
             }
         }
         
