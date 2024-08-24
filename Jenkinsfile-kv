@@ -9,9 +9,7 @@ parameters {
 tools{
    maven "maven 3.9.8"
 }
-triggers {
-  pollSCM '* * * * *'
-}
+
 options {
   timestamps()
 }
