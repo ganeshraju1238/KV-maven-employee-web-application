@@ -2,7 +2,7 @@
 pipeline {
     agent any
 parameters {
-  choice choices: ['devteam', 'qa', 'uat'], description: 'selecting Branches for kv project', name: 'Branch name'
+  choice choices: ['devteam', 'qa', 'uat'], description: 'selecting Branches for kv project', name: 'Branchname'
 }
 
 
